@@ -1,58 +1,48 @@
-# Fuqarolar Monitoring Platformasi — Backend
+# 🏛️ "Fuqarolar Monitoring Platformasi" - Backend
 
-GovTech civic monitoring system for schools and kindergartens in Uzbekistan.
+O'zbekistondagi maktab va bog'chalarda hukumat tomonidan berilgan va'dalarni fuqarolik nazorati (civic monitoring) platformasi backend tizimi.
 
-## Tech Stack
-- Django 4.2 + DRF 3.14
-- PostgreSQL 15
-- Redis 7 (Cache + Rate limiting)
-- Celery + Celery Beat (Queue)
-- Docker + docker-compose
+---
 
-## Local Setup
+## 🚀 Tezkir Ishga Tushirish (Quick Start)
 
-1. **Clone the repository**
-2. **Create .env file**
-   ```bash
-   cp .env.example .env
-   ```
-3. **Run with Docker**
-   ```bash
-   docker-compose up --build
-   ```
-4. **Access the API**
-   - API Base: `http://localhost:8000/api/v1/`
-   - Swagger Docs: `http://localhost:8000/api/docs/`
-   - Redoc: `http://localhost:8000/api/redoc/`
-
-## API Endpoints Summary
-
-### Auth
-- `POST /api/v1/auth/register/`
-- `POST /api/v1/auth/login/`
-- `GET /api/v1/auth/me/`
-
-### Institutions
-- `GET /api/v1/institutions/`
-- `GET /api/v1/institutions/{id}/`
-- `GET /api/v1/institutions/regions/`
-
-### Reports & Problems
-- `POST /api/v1/reports/` - Submit verification of a promise
-- `POST /api/v1/problems/` - Report a new problem
-- `POST /api/v1/reports/{id}/verify/` - Verify another user's report
-
-### Dashboard
-- `GET /api/v1/dashboard/stats/`
-- `GET /api/v1/dashboard/map/`
-
-## Manual GeoASR Sync
-To manually trigger a sync from terminal:
+### 1. Omborni klonlash (Clone)
 ```bash
-docker-compose exec web python manage.py shell -c "from integrations.geoasr.sync import GeoASRSyncService; GeoASRSyncService.sync_all()"
+git clone https://github.com/bekzodidiye/report_backend.git
+cd report_backend
 ```
 
-## Running Tests
+### 2. Sozlamalar (Environment)
+`.env.example` faylini `.env` deb nusxalang va kerakli parollarni o'rnating.
+
+### 3. Docker orqali ishga tushirish
 ```bash
-docker-compose exec web pytest
+docker-compose up --build
 ```
+
+### 4. API Manzillari
+*   **Base URL:** `http://localhost:8000/api/v1/`
+*   **Swagger API Docs:** `http://localhost:8000/api/docs/`
+*   **Admin Panel:** `http://localhost:8000/admin/`
+
+---
+
+## 📚 Batafsil Hujjatlar (Full Docs)
+
+Sizga qulay bo'lishi uchun loyiha ikki turdagi batafsil hujjatlar bilan ta'minlangan:
+
+1.  **[Backend System Guide](BACKEND_STRICT_GUIDE.md)**: Arxiv, texnologik stek, har bir ilova (`apps/`) vazifasi va server sozlamalari haqida.
+2.  **[Frontend API Guide](API_GUIDE.md)**: Frontend dasturchilar uchun barcha endpointlar, JWT login va integratsiya qo'llanmasi.
+
+---
+
+## 🛠️ Muhim Buyruqlar
+
+*   **Migratsiya yuborish:** `docker-compose exec web python manage.py migrate`
+*   **Superuser yaratish:** `docker-compose exec web python manage.py createsuperuser`
+*   **Testlarni ishga tushirish:** `docker-compose exec web pytest`
+*   **GeoASR Synx:** `docker-compose exec web python manage.py shell -c "from integrations.geoasr.sync import GeoASRSyncService; GeoASRSyncService.sync_all()"`
+
+---
+**Civic Platform - 2026**
+Backend: Django 4.2 + DRF
