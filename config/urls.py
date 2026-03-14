@@ -25,6 +25,7 @@ api_v1_urlpatterns = [
     path('problems/', include('apps.problems.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
     path('moderation/', include('apps.moderation.urls')),
+    path('construction/', include('apps.construction.urls')),   # NEW — Construction Reports
 ]
 
 urlpatterns = [

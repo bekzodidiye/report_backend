@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.problems',
     'apps.dashboard',
     'apps.moderation',
+    'apps.construction',
 ]
 
 MIDDLEWARE = [
@@ -142,6 +143,11 @@ CELERY_BEAT_SCHEDULE = {
     'sync-geoasr-data-daily': {
         'task': 'apps.institutions.tasks.sync_geoasr_data',
         'schedule': 86400.0,  # 24 soat
+    },
+    # Construction likes sinxronizatsiyasi (har 60 soniya)
+    'sync-construction-likes': {
+        'task': 'apps.construction.tasks.sync_construction_like_counts',
+        'schedule': 60.0,
     },
 }
 
