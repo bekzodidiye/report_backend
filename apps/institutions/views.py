@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
 from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
