@@ -1,0 +1,2 @@
+-r base.txt
+django-anymail[mailgun]==10.2
