@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
+import os
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
@@ -59,3 +60,46 @@ class ReportVerifyView(APIView):
             return standard_response(success=False, message=str(e.message), status=400)
         except Exception as e:
             return standard_response(success=False, message=str(e), status=400)
+
+
+class ReportDetailView(APIView):
+    """
+    GET    /api/v1/reports/{id}/  — Batafsil ma'lumot
+    DELETE /api/v1/reports/{id}/  — O'chirish (moderator: X-Moderator-Key header)
+    """
+
+    def _check_key(self, request):
+        secret = os.getenv('MODERATOR_SECRET', '')
+        return bool(secret and request.headers.get('X-Moderator-Key') == secret)
+
+    @swagger_auto_schema(
+        operation_summary="Hisobot batafsil",
+        responses={200: ReportSerializer, 404: 'Topilmadi'},
+        tags=['reports']
+    )
+    def get(self, request, id):
+        try:
+            report = Report.objects.get(pk=id)
+            return standard_response(data=ReportSerializer(report).data)
+        except Report.DoesNotExist:
+            return standard_response(success=False, message="Hisobot topilmadi.", status=404)
+
+    @swagger_auto_schema(
+        operation_summary="Hisobotni o'chirish (moderator)",
+        operation_description="X-Moderator-Key header talab etiladi.",
+        manual_parameters=[
+            openapi.Parameter('X-Moderator-Key', openapi.IN_HEADER,
+                              type=openapi.TYPE_STRING, required=True)
+        ],
+        responses={200: 'O\'chirildi', 403: 'Ruxsat berilmagan', 404: 'Topilmadi'},
+        tags=['reports']
+    )
+    def delete(self, request, id):
+        if not self._check_key(request):
+            return standard_response(success=False, message="Ruxsat berilmagan.", status=403)
+        try:
+            report = Report.objects.get(pk=id)
+            report.delete()
+            return standard_response(message="Hisobot muvaffaqiyatli o'chirildi.")
+        except Report.DoesNotExist:
+            return standard_response(success=False, message="Hisobot topilmadi.", status=404)

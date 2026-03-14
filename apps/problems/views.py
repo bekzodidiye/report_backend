@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
+import os
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.decorators import method_decorator
 from django_ratelimit.decorators import ratelimit
@@ -59,3 +60,46 @@ class ProblemVerifyView(APIView):
             return standard_response(success=False, message=str(e.message), status=400)
         except Exception as e:
             return standard_response(success=False, message=str(e), status=400)
+
+
+class ProblemDetailView(APIView):
+    """
+    GET    /api/v1/problems/{id}/  — Batafsil ma'lumot
+    DELETE /api/v1/problems/{id}/  — O'chirish (moderator: X-Moderator-Key header)
+    """
+
+    def _check_key(self, request):
+        secret = os.getenv('MODERATOR_SECRET', '')
+        return bool(secret and request.headers.get('X-Moderator-Key') == secret)
+
+    @swagger_auto_schema(
+        operation_summary="Muammo batafsil",
+        responses={200: ProblemSerializer, 404: 'Topilmadi'},
+        tags=['problems']
+    )
+    def get(self, request, id):
+        try:
+            problem = Problem.objects.get(pk=id)
+            return standard_response(data=ProblemSerializer(problem).data)
+        except Problem.DoesNotExist:
+            return standard_response(success=False, message="Muammo topilmadi.", status=404)
+
+    @swagger_auto_schema(
+        operation_summary="Muammoni o'chirish (moderator)",
+        operation_description="X-Moderator-Key header talab etiladi.",
+        manual_parameters=[
+            openapi.Parameter('X-Moderator-Key', openapi.IN_HEADER,
+                              type=openapi.TYPE_STRING, required=True)
+        ],
+        responses={200: 'O\'chirildi', 403: 'Ruxsat berilmagan', 404: 'Topilmadi'},
+        tags=['problems']
+    )
+    def delete(self, request, id):
+        if not self._check_key(request):
+            return standard_response(success=False, message="Ruxsat berilmagan.", status=403)
+        try:
+            problem = Problem.objects.get(pk=id)
+            problem.delete()
+            return standard_response(message="Muammo muvaffaqiyatli o'chirildi.")
+        except Problem.DoesNotExist:
+            return standard_response(success=False, message="Muammo topilmadi.", status=404)
