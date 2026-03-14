@@ -129,6 +129,17 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+CELERY_BEAT_SCHEDULE = {
+    'keep-backend-alive-every-10-min': {
+        'task': 'core.tasks.keep_backend_alive',
+        'schedule': 600.0,  # 10 daqiqa
+    },
+    'sync-geoasr-data-daily': {
+        'task': 'apps.institutions.tasks.sync_geoasr_data',
+        'schedule': 86400.0,  # 24 soat
+    },
+}
+
 # Redis Cache
 CACHES = {
     "default": {
