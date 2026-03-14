@@ -15,6 +15,9 @@ fi
 # Run migrations
 python manage.py migrate --noinput
 
+# Setup admin
+python manage.py setup_admin
+
 # Collect static files
 python manage.py collectstatic --noinput
 

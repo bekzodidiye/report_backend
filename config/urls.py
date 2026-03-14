@@ -30,6 +30,8 @@ api_v1_urlpatterns = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(api_v1_urlpatterns)),
+    path('health/', include('core.urls')),
+    path('', include('django_prometheus.urls')),
     
     # Swagger
     re_path(r'^api/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
