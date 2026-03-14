@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_ratelimit',
     'storages',
+    'django_prometheus',
 
     # Local apps
     'apps.users',
@@ -38,9 +39,12 @@ INSTALLED_APPS = [
     'apps.promises',
     'apps.reports',
     'apps.problems',
+    'apps.dashboard',
+    'apps.moderation',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -163,3 +168,16 @@ if USE_S3:
 
 # GeoASR
 GEOASR_TOKEN = os.getenv('GEOASR_TOKEN')
+
+# Swagger
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'JSON_EDITOR': True,
+}
