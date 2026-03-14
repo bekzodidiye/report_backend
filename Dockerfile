@@ -28,4 +28,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
 # Default command to start the server
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:10000", "--workers", "3", "--worker-class", "uvicorn.workers.UvicornWorker", "--timeout", "120"]
+CMD ["gunicorn", "config.asgi:application", "--bind", "0.0.0.0:10000", "--workers", "3", "--worker-class", "uvicorn.workers.UvicornWorker", "--timeout", "120"]
