@@ -11,6 +11,8 @@ DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Security
 SECURE_HSTS_SECONDS = 31536000
 SECURE_SSL_REDIRECT = True
